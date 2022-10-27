@@ -10,6 +10,11 @@ import {check} from 'k6';
 // windows
 // docker-compose run -v /$PWD/samples:/scripts k6 run /scripts/class/detail/metrics/me_1.js
 
+export const options = {
+	vus: 5,
+	duration: '5s',
+};
+
 export default function () {
 	const res = http.get('http://test.k6.io/');
 	check(res, {
