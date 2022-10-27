@@ -2,20 +2,25 @@ import http from 'k6/http';
 import {sleep} from 'k6';
 
 /**
-Stages				可以指定在特定時間內增加或減少 用戶 數量的執行方式，也就是說可以模仿更精準的測試情境。
+rps				用戶每秒可以發送最大的 request 數量
+ 				其實就是為了更好模擬用戶流量，再測試前須確認好測試範疇
+				多數平台應該都是在某些時間點流量會增大
+				但這個流量增大並非是無上限的增大
+				一定會落在某個數值
+ 				只要將數值取出來後並換算
+
+				e.g.
+				用戶量 100 vus
+				執行時間 60s
+				request 條件是 100000
+				那就是一位 user rps 就是 100000/100/60 = 16
+				通常 rps 的範疇會多估 10-20% 以防萬一，所以湊個整數 20 就是較符合的數值
  **/
 
-export let options = {
-	/**
-	 * 第一階段就是在 30 秒間逐步把用戶加到 10 個
-	 * 第二階段就是在一分半內逐步從 10 個用戶追加到 30 個用戶
-	 * 第三階段是在 20 秒內逐步從 30 個用戶 降到 0 個用戶個用戶
-	 */
-	stages: [
-		{duration: '30s', target: 10},
-		{duration: '1m30s', target: 30},
-		{duration: '20s', target: 0},
-	],
+export const options = {
+	vus: 100,
+	duration: '60s',
+	rps: 20
 };
 
 export default function () {
